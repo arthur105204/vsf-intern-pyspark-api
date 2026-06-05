@@ -18,3 +18,4 @@ This folder contains project planning, API scope, dataset framing, and mentor-re
 - `data/DATASET_AND_PROBLEM.md`
 - `api/API_SCOPE.md`
 - `api/API_DOCS.md`
+- `reports/weekly/weekly-plan-05-06-to-12-06.md`
