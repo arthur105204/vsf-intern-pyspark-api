@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Data artifacts
+data/raw/*
+data/interim/*
+data/processed/*
+data/predictions/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+!data/predictions/.gitkeep
+!data/README.md
+
+# Runtime artifacts
+logs/
+tmp/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
