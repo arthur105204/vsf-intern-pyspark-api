@@ -4,53 +4,19 @@ Date: 2026-06-06
 
 ## Status
 
-`DATASET_MISSING`
+Completed.
 
-The Bank Marketing dataset was not found locally, so Pandas EDA was not executed and no EDA charts were generated today.
-
-Checked likely local locations:
-
-- `data/raw/`
-- `pyspark_project/data/raw/`
-- `bank.csv`
-- `bank-full.csv`
-- `bank-additional-full.csv`
-
-Current result: `data/raw/` only contains `.gitkeep`.
-
-## Download Instructions
-
-Dataset source: UCI Machine Learning Repository, Bank Marketing dataset.
-
-Recommended manual steps:
-
-1. Open: `https://archive.ics.uci.edu/dataset/222/bank+marketing`
-2. Download `bank.zip` or `bank-additional.zip`.
-3. Extract one of these CSV files into `data/raw/`:
-   - `bank-full.csv`
-   - `bank.csv`
-   - `bank-additional-full.csv`
-4. Re-run Pandas EDA after the CSV exists locally.
-
-Expected preferred file for this project:
+Dataset used:
 
 ```text
-data/raw/bank-full.csv
+pyspark_project/data/raw/bank_marketing/bank.zip::bank-full.csv
 ```
 
-PowerShell download option:
-
-```powershell
-Invoke-WebRequest -Uri "https://archive.ics.uci.edu/static/public/222/bank+marketing.zip" -OutFile "data/raw/bank-marketing.zip"
-Expand-Archive -LiteralPath "data/raw/bank-marketing.zip" -DestinationPath "data/raw/bank-marketing" -Force
-Get-ChildItem -Recurse "data/raw/bank-marketing" -Filter "bank-full.csv" | Select-Object -First 1 | Copy-Item -Destination "data/raw/bank-full.csv"
-```
-
-If `bank-full.csv` is not available after extraction, use `bank.csv` or `bank-additional-full.csv` and update the EDA report with the chosen source file.
+The raw dataset archive is kept out of git. The report and generated figures are the reviewable artifacts.
 
 ## Dataset Overview
 
-The intended dataset is Bank Marketing. It is a tabular classification dataset related to direct marketing campaigns for a Portuguese banking institution.
+Bank Marketing is a tabular classification dataset from direct marketing campaigns by a banking institution.
 
 Problem framing:
 
@@ -60,62 +26,146 @@ Problem framing:
 - Negative class: `no`.
 - Target encoding plan: `yes = 1`, `no = 0`.
 
-## Required EDA Outputs
+Dataset shape:
 
-The following EDA outputs are still pending because the dataset is missing:
+| Metric | Value |
+| --- | --- |
+| Rows | `45,211` |
+| Columns | `17` |
 
-- Row count.
-- Column count.
-- Schema and dtypes.
-- Missing value and `unknown` value summary.
-- Target distribution for `y`.
-- Numeric feature summary.
-- Categorical feature cardinality summary.
+Columns:
 
-## Planned Chart List
+```text
+age, job, marital, education, default, balance, housing, loan, contact,
+day, month, duration, campaign, pdays, previous, poutcome, y
+```
 
-Exactly these 5 charts should be generated after the dataset is available:
+## Schema and Dtypes
 
-| # | Chart | Planned File Path | Status |
-| --- | --- | --- | --- |
-| 1 | Target distribution | `pyspark_project/reports/figures/01_target_distribution.png` | Blocked |
-| 2 | Age distribution | `pyspark_project/reports/figures/02_age_distribution.png` | Blocked |
-| 3 | Top job categories | `pyspark_project/reports/figures/03_top_job_categories.png` | Blocked |
-| 4 | Balance or campaign distribution | `pyspark_project/reports/figures/04_numeric_distribution.png` | Blocked |
-| 5 | Target rate by important categorical feature | `pyspark_project/reports/figures/05_target_rate_by_category.png` | Blocked |
+| Column | Dtype |
+| --- | --- |
+| `age` | int64 |
+| `job` | str |
+| `marital` | str |
+| `education` | str |
+| `default` | str |
+| `balance` | int64 |
+| `housing` | str |
+| `loan` | str |
+| `contact` | str |
+| `day` | int64 |
+| `month` | str |
+| `duration` | int64 |
+| `campaign` | int64 |
+| `pdays` | int64 |
+| `previous` | int64 |
+| `poutcome` | str |
+| `y` | str |
+
+## Target Distribution
+
+| Target | Rows | Share |
+| --- | --- | --- |
+| `no` | `39,922` | `88.30%` |
+| `yes` | `5,289` | `11.70%` |
+
+The target is imbalanced, so accuracy alone is not enough for evaluation. Precision, recall, F1, and AUC should also be tracked.
+
+## Missing and Unknown Values
+
+No null values were detected by Pandas.
+
+Literal `unknown` values:
+
+| Column | Unknown Count |
+| --- | --- |
+| `job` | `288` |
+| `education` | `1,857` |
+| `contact` | `13,020` |
+| `poutcome` | `36,959` |
+
+`unknown` should be treated as a categorical level initially, then reviewed during feature analysis.
+
+## Numeric Feature Summary
+
+| Feature | Mean | Std | Min | P50 | Max |
+| --- | --- | --- | --- | --- | --- |
+| `age` | `40.936` | `10.619` | `18` | `39` | `95` |
+| `balance` | `1362.272` | `3044.766` | `-8019` | `448` | `102127` |
+| `day` | `15.806` | `8.322` | `1` | `16` | `31` |
+| `duration` | `258.163` | `257.528` | `0` | `180` | `4918` |
+| `campaign` | `2.764` | `3.098` | `1` | `2` | `63` |
+| `pdays` | `40.198` | `100.129` | `-1` | `-1` | `871` |
+| `previous` | `0.580` | `2.303` | `0` | `0` | `275` |
+
+## Categorical Feature Cardinality
+
+| Feature | Cardinality |
+| --- | --- |
+| `job` | `12` |
+| `marital` | `3` |
+| `education` | `4` |
+| `default` | `2` |
+| `housing` | `2` |
+| `loan` | `2` |
+| `contact` | `3` |
+| `month` | `12` |
+| `poutcome` | `4` |
+
+## Chart List
+
+Exactly 5 EDA charts were generated:
+
+| # | Chart | File Path |
+| --- | --- | --- |
+| 1 | Target distribution | `pyspark_project/reports/figures/01_target_distribution.png` |
+| 2 | Age distribution | `pyspark_project/reports/figures/02_age_distribution.png` |
+| 3 | Top job categories | `pyspark_project/reports/figures/03_top_job_categories.png` |
+| 4 | Balance distribution, clipped p1-p99 | `pyspark_project/reports/figures/04_balance_distribution.png` |
+| 5 | Target rate by job | `pyspark_project/reports/figures/05_target_rate_by_job.png` |
 
 ## Key Findings
 
-No data-driven findings are available yet because the dataset is not present locally.
+- The dataset has 45,211 rows, enough for a meaningful internship-scale PySpark pipeline.
+- The target is imbalanced: only about 11.70% of rows are `yes`.
+- `balance`, `duration`, `campaign`, `pdays`, and `previous` have large ranges and likely outliers.
+- `pdays = -1` is common and should be treated as meaningful, not ordinary missingness.
+- `contact` and `poutcome` contain many `unknown` values.
+- Top target-rate job categories include `student`, `retired`, and `unemployed`.
 
-Expected analysis questions once the dataset is available:
+Target rate by job, top 10:
 
-- How imbalanced is the `y` target?
-- Which categorical features have many levels or many `unknown` values?
-- Whether numeric fields such as `balance`, `campaign`, `pdays`, or `previous` have strong outliers.
-- Whether contact/campaign-related fields create leakage risks.
-- Which categorical feature is most useful for target-rate comparison.
+| Job | Yes Rate |
+| --- | --- |
+| `student` | `28.68%` |
+| `retired` | `22.79%` |
+| `unemployed` | `15.50%` |
+| `management` | `13.76%` |
+| `admin.` | `12.20%` |
+| `self-employed` | `11.84%` |
+| `unknown` | `11.81%` |
+| `technician` | `11.06%` |
+| `services` | `8.88%` |
+| `housemaid` | `8.79%` |
 
-## Potential Data Quality Issues to Check
+## Potential Data Quality Issues
 
-- `unknown` values in categorical columns such as `job`, `education`, `contact`, or `poutcome`.
-- Outliers in `balance`, `duration`, `campaign`, `pdays`, and `previous`.
-- `pdays = -1`, which usually means the client was not previously contacted.
-- Possible leakage from `duration`, because call duration may only be known after the marketing contact.
-- Missing stable customer identifier, requiring generated `user_id`.
+- High `unknown` count in `poutcome` and `contact`.
+- Strong outliers in `balance` and `duration`.
+- `duration` may be leakage-prone if predictions are meant to happen before campaign call completion.
+- No stable customer identifier exists, so the pipeline should generate `user_id`.
+- Class imbalance should influence metric selection and model interpretation.
 
-## Why This Dataset Is Suitable
+## Why This Dataset Is Suitable for PySpark
 
-Bank Marketing is suitable for this PySpark pipeline project because it provides:
+Bank Marketing is suitable because it includes:
 
-- A practical binary classification target.
 - Mixed numeric and categorical features.
-- Realistic preprocessing needs for `StringIndexer`, `OneHotEncoder`, and `VectorAssembler`.
-- A clear output use case for precomputed prediction serving by `user_id`.
-- Enough feature variety to compare Logistic Regression with tree-based Spark models later.
+- Clear binary target.
+- Realistic cleaning needs around `unknown`, outliers, and generated IDs.
+- Categorical preprocessing needs for `StringIndexer` and `OneHotEncoder`.
+- A natural prediction output table for lookup API serving.
 
 ## M4 Status
 
-Milestone M4, EDA completed, should be marked `In Progress` or `Blocked`, not `Done`.
-
-Reason: dataset is missing, so EDA statistics and charts cannot be produced truthfully yet.
+Milestone M4, EDA completed, can be marked `Done`.
