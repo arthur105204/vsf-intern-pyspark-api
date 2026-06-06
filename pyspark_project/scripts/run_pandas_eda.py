@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[2]
 DATASET_CANDIDATES = [
+    ROOT / "pyspark_project" / "data" / "raw" / "bank_marketing" / "bank-full.csv",
     ROOT / "data" / "raw" / "bank-full.csv",
     ROOT / "pyspark_project" / "data" / "raw" / "bank-full.csv",
 ]

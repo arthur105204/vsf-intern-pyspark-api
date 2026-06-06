@@ -9,10 +9,10 @@ Completed.
 Dataset used:
 
 ```text
-pyspark_project/data/raw/bank_marketing/bank.zip::bank-full.csv
+pyspark_project/data/raw/bank_marketing/bank-full.csv
 ```
 
-The raw dataset archive is kept out of git. The report and generated figures are the reviewable artifacts.
+The dataset was loaded with `sep=";"`. Raw dataset files are kept out of git. The report and generated figures are the reviewable artifacts.
 
 ## Dataset Overview
 
@@ -155,6 +155,16 @@ Target rate by job, top 10:
 - `duration` may be leakage-prone if predictions are meant to happen before campaign call completion.
 - No stable customer identifier exists, so the pipeline should generate `user_id`.
 - Class imbalance should influence metric selection and model interpretation.
+
+## Cleaning and Feature Implications
+
+- Generate `user_id` before scoring so each prediction row can be served by API lookup.
+- Encode `y` into `label` using `yes = 1` and `no = 0`.
+- Keep literal `unknown` as its own category for the MVP instead of dropping rows.
+- Use `StringIndexer` and `OneHotEncoder` for categorical columns.
+- Use numeric columns directly after checking outliers and nulls.
+- Consider excluding or separately evaluating `duration` if the intended prediction moment is before call completion.
+- Track precision, recall, F1, and AUC because the positive class is only about 11.70%.
 
 ## Why This Dataset Is Suitable for PySpark
 

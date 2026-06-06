@@ -8,6 +8,18 @@ Prepare a practical preprocessing plan for the Bank Marketing term deposit subsc
 
 This plan is implementation-ready but does not train a model today.
 
+Verified dataset for the current MVP:
+
+```text
+pyspark_project/data/raw/bank_marketing/bank-full.csv
+```
+
+Read option:
+
+```text
+sep=";"
+```
+
 ## Target Encoding Plan
 
 Source target column:
@@ -44,9 +56,9 @@ Rules:
 - Use `user_id` for prediction output and API lookup.
 - Treat `user_id` as potentially sensitive or linkable in real systems.
 
-## Expected Categorical Columns
+## Verified Categorical Columns
 
-For `bank-full.csv` style data:
+For the current `bank-full.csv` dataset:
 
 - `job`
 - `marital`
@@ -58,15 +70,11 @@ For `bank-full.csv` style data:
 - `month`
 - `poutcome`
 
-For `bank-additional-full.csv`, additional categorical fields may include:
+These columns were confirmed during Pandas EDA.
 
-- `day_of_week`
+## Verified Numeric Columns
 
-The final column list should be confirmed after loading the actual dataset.
-
-## Expected Numeric Columns
-
-For `bank-full.csv` style data:
+For the current `bank-full.csv` dataset:
 
 - `age`
 - `balance`
@@ -76,15 +84,7 @@ For `bank-full.csv` style data:
 - `pdays`
 - `previous`
 
-For `bank-additional-full.csv`, additional numeric/economic fields may include:
-
-- `emp.var.rate`
-- `cons.price.idx`
-- `cons.conf.idx`
-- `euribor3m`
-- `nr.employed`
-
-The final column list should be confirmed after loading the actual dataset.
+These columns were confirmed during Pandas EDA.
 
 ## Unknown and Missing Handling
 
@@ -96,6 +96,15 @@ Planned handling:
 - For null numeric values, consider median imputation if missing values exist.
 - For null categorical values, fill with `unknown`.
 - Keep `pdays = -1` as meaningful unless later analysis shows a better encoding is needed.
+
+Observed `unknown` counts:
+
+| Column | Unknown Count |
+| --- | --- |
+| `job` | `288` |
+| `education` | `1,857` |
+| `contact` | `13,020` |
+| `poutcome` | `36,959` |
 
 ## Features to Keep or Drop
 
