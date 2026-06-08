@@ -10,16 +10,7 @@ venv/
 .env.*
 !.env.example
 
-# Data artifacts
-data/raw/*
-data/interim/*
-data/processed/*
-data/predictions/*
-!data/raw/.gitkeep
-!data/interim/.gitkeep
-!data/processed/.gitkeep
-!data/predictions/.gitkeep
-!data/README.md
+# PySpark data artifacts
 pyspark_project/data/raw/*
 !pyspark_project/data/raw/.gitkeep
 pyspark_project/data/processed/*

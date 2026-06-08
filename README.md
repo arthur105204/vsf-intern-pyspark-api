@@ -6,39 +6,49 @@ The project uses the Bank Marketing dataset to predict term deposit subscription
 
 ## Current Phase
 
-Documentation and scope only.
+MVP implementation and review artifacts.
 
-No pipeline code, notebooks, model training, or API implementation has been added yet.
+Completed so far:
+
+- Project scope and API documentation.
+- Pandas EDA with 5 charts.
+- PySpark preprocessing workflow.
+- Spark MLlib Logistic Regression baseline.
+- Logistic Regression threshold/class-weight comparison gate.
+- FastAPI lookup MVP using precomputed mock serving data.
 
 ## Repository Structure
 
 ```text
 .
 |-- README.md
-|-- docs/
-|   |-- README.md
-|   |-- project/
-|   |   `-- PROJECT_INTENT.md
+|-- api_project/
+|   |-- app/
 |   |-- data/
-|   |   `-- DATASET_AND_PROBLEM.md
+|   |-- reports/
+|   |-- scripts/
+|   `-- tests/
+|-- docs/
 |   |-- api/
-|   |   |-- API_SCOPE.md
-|   |   `-- API_DOCS.md
-|   `-- reports/
-|       |-- meetings/
-|       `-- weekly/
-|-- data/
-|   |-- raw/
-|   |-- interim/
-|   |-- processed/
-|   `-- predictions/
-|-- src/
-|   |-- pipeline/
-|   `-- api/
-`-- tests/
-    |-- functional/
-    `-- performance/
+|   |-- daily/
+|   |-- data/
+|   |-- mentor_materials/
+|   |-- project/
+|   `-- CODEBASE_WALKTHROUGH.md
+`-- pyspark_project/
+    |-- data/
+    |   |-- raw/
+    |   `-- processed/
+    |-- reports/
+    |   `-- figures/
+    `-- scripts/
 ```
+
+## Main Areas
+
+- `pyspark_project/`: real Bank Marketing EDA, PySpark preprocessing, model training, model comparison reports.
+- `api_project/`: FastAPI prediction lookup MVP, API tests, mock serving dataset.
+- `docs/`: project intent, API docs, daily notes, codebase walkthrough, mentor-review materials.
 
 ## Key Documents
 
@@ -46,9 +56,14 @@ No pipeline code, notebooks, model training, or API implementation has been adde
 - [Dataset and problem](docs/data/DATASET_AND_PROBLEM.md)
 - [API scope](docs/api/API_SCOPE.md)
 - [API docs](docs/api/API_DOCS.md)
+- [Pandas EDA report](pyspark_project/reports/PANDAS_EDA_REPORT.md)
+- [PySpark preprocessing report](pyspark_project/reports/PYSPARK_PREPROCESSING_REPORT.md)
+- [Logistic Regression report](pyspark_project/reports/LOGISTIC_REGRESSION_REPORT.md)
+- [Model comparison report](pyspark_project/reports/MODEL_COMPARISON_REPORT.md)
 
 ## Notes
 
 - The API MVP is lookup-based, not realtime model inference.
-- Prediction output may be expanded or mocked for load testing, but mock rows must not be described as real raw training users.
-- Do not commit raw sensitive data.
+- `duration` is excluded from model features to avoid leakage.
+- Mock 500k API data is for serving/load-test readiness, not model evaluation.
+- Do not commit raw sensitive data or generated processed outputs.
