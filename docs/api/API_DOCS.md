@@ -6,6 +6,32 @@ The prediction API serves precomputed term deposit subscription propensity predi
 
 The API does not perform realtime model inference. Predictions are generated ahead of time by the PySpark pipeline and stored in a prediction output table. The API looks up a requested `user_id` and returns the matching prediction result.
 
+Current MVP data source:
+
+```text
+api_project/data/mock_predictions_500k.parquet
+```
+
+The current API serves mock prediction output for lookup and load-test readiness. It does not yet serve the Logistic Regression output from the PySpark pipeline.
+
+## Health Endpoint
+
+```http
+GET /health
+```
+
+Example response:
+
+```json
+{
+  "status": "ok",
+  "record_count": 500000,
+  "cache_size": 0,
+  "cache_hits": 0,
+  "cache_misses": 0
+}
+```
+
 ## Endpoint
 
 ```http
@@ -29,13 +55,13 @@ GET /prediction/client_000001
 ```json
 {
   "user_id": "client_000001",
-  "prediction_score": 0.8734,
-  "prediction_label": 1,
-  "model_version": "logreg_v1",
-  "scored_at": "2026-06-05T09:30:00Z",
+  "prediction_score": 0.108209,
+  "prediction_label": 0,
+  "model_version": "bank_marketing_mock_v1",
+  "scored_at": "2026-06-06T09:00:00Z",
   "request_id": "req_7f8a9b10",
   "trace_id": "trace_123456789",
-  "timestamp": "2026-06-05T09:31:12Z"
+  "timestamp": "2026-06-08T09:31:12Z"
 }
 ```
 
@@ -43,11 +69,11 @@ GET /prediction/client_000001
 
 ```json
 {
-  "error": "not_found",
-  "message": "Prediction not found for user_id client_999999.",
+  "error": "USER_NOT_FOUND",
+  "message": "No prediction found for user_id=client_999999",
   "request_id": "req_2c4d6e8f",
   "trace_id": "trace_987654321",
-  "timestamp": "2026-06-05T09:32:00Z"
+  "timestamp": "2026-06-08T09:32:00Z"
 }
 ```
 
@@ -55,11 +81,11 @@ GET /prediction/client_000001
 
 ```json
 {
-  "error": "internal_server_error",
+  "error": "INTERNAL_SERVER_ERROR",
   "message": "Unable to retrieve prediction at this time.",
   "request_id": "req_4a5b6c7d",
   "trace_id": "trace_456789123",
-  "timestamp": "2026-06-05T09:33:00Z"
+  "timestamp": "2026-06-08T09:33:00Z"
 }
 ```
 
@@ -119,6 +145,40 @@ Cache miss:
 - If a prediction is found, the API may store it in memory for future requests.
 
 Redis can be considered later as a more production-like cache, but it is not required for the MVP.
+
+Current implementation:
+
+- Prediction rows are loaded from Parquet into an in-memory dictionary.
+- A small LRU-style in-memory cache stores repeated lookup responses by `user_id`.
+- `/health` exposes `cache_size`, `cache_hits`, and `cache_misses`.
+
+## Local Run
+
+Using the bundled Python runtime in this workspace:
+
+```powershell
+& 'C:\Users\nmp10\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' -m uvicorn api_project.app.main:app --host 127.0.0.1 --port 8000
+```
+
+Generic command if Python is on PATH:
+
+```bash
+python -m uvicorn api_project.app.main:app --host 127.0.0.1 --port 8000
+```
+
+## Manual Test
+
+```bash
+curl http://127.0.0.1:8000/health
+curl http://127.0.0.1:8000/prediction/client_000001
+curl http://127.0.0.1:8000/prediction/client_missing
+```
+
+Automated tests:
+
+```powershell
+& 'C:\Users\nmp10\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' -m pytest api_project\tests -q
+```
 
 ## Functional Test Plan
 

@@ -22,6 +22,8 @@ data/predictions/*
 !data/README.md
 pyspark_project/data/raw/*
 !pyspark_project/data/raw/.gitkeep
+pyspark_project/data/processed/*
+!pyspark_project/data/processed/.gitkeep
 
 # Runtime artifacts
 logs/
